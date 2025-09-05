@@ -40,8 +40,8 @@ def get_absolute_scale(ground_truth_poses, frame_id):
 def main():
     # Setup
     # Set the paths
-    image_dir = 'data/sequences/01/image_1/'
-    pose_file = 'data/poses/01.txt'
+    image_dir = 'data/sequences/00/image_0/'
+    pose_file = 'data/poses/00.txt'
 
     # Load camera intrinsics and ground truth
     K = np.array([[718.8560, 0, 607.1928],
@@ -101,15 +101,18 @@ def main():
     # TODO: Plot your calculated trajectory and the ground truth trajectory.
     trajectory_points = np.array(trajectory)
     ground_truth_points = np.array([T[:3, 3] for T in ground_truth_poses])
+    error = np.linalg.norm(trajectory_points - ground_truth_points[:num_frames], axis=1)
+    
 
     plt.figure(figsize=(10, 10))
     # We plot X (axis 0) vs Z (axis 2) for a top-down view
     plt.plot(trajectory_points[:, 0], trajectory_points[:, 2], label='Estimated Trajectory', color='red')
-    plt.plot(ground_truth_points[:1100, 0], ground_truth_points[:1100, 2], label='Ground Truth', color='blue')
+    plt.plot(ground_truth_points[:num_frames, 0], ground_truth_points[:num_frames, 2], label='Ground Truth', color='blue')
     
     plt.title('Monocular Visual Odometry')
     plt.xlabel('X position (m)')
     plt.ylabel('Z position (m)')
+    plt.title(f'Mean Absolute Trajectory Error (ATE): {np.mean(error):.2f} m')
     plt.legend()
     plt.grid(True)
     plt.axis('equal') # Important for correct aspect ratio
