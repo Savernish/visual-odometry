@@ -12,9 +12,10 @@ def lowe_ratio_test(matches, threshold):
             good_matches.append(m)
     return sorted(good_matches, key=lambda x: x.distance)
 
-def feature_matching():
-    # Import the images and keypoints/descriptors
-    img1, (keyp1, des1), img2, (keyp2, des2) = feature_extraction()
+def feature_matching(img1, img2):
+    # Get keypoints and descriptors for both images
+    keyp1, des1 = feature_extraction(img1)
+    keyp2, des2 = feature_extraction(img2)
     # Use brute force matcher with KNN for lowe's ratio test
     bf = cv.BFMatcher(cv.NORM_HAMMING)
     matches = bf.knnMatch(des1, des2, k=2)
@@ -22,16 +23,16 @@ def feature_matching():
     # Apply Lowe's ratio test
     good_matches = lowe_ratio_test(matches, 0.8)
 
-    img3 = cv.drawMatches(img1, keyp1, img2, keyp2, good_matches[:50], None, flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+    return keyp1, keyp2, good_matches
 
-    dpi = plt.rcParams['figure.dpi']
-    height, width = img3.shape[:2]
-    figsize = (width/dpi*1.5, height/dpi*1.5)
+    # dpi = plt.rcParams['figure.dpi']
+    # height, width = img3.shape[:2]
+    # figsize = (width/dpi*1.5, height/dpi*1.5)
     
-    plt.figure(figsize=figsize)
-    plt.imshow(img3)
-    plt.axis('off')
-    plt.tight_layout(pad=0)
-    plt.show()
+    # plt.figure(figsize=figsize)
+    # plt.imshow(img3)
+    # plt.axis('off')
+    # plt.tight_layout(pad=0)
+    # plt.show()
 
-feature_matching()
+# feature_matching()
